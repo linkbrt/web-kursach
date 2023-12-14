@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<p class="mb-3">Забронировать комнату {{id}}</p>
+<form action="/room/{{id}}/" method="post">
+    {% csrf_token %}
+    <div class="input-group mb-3 w-25">
+        <span class="input-group-text" id="inputGroup-sizing-default">От:</span>
+        <input type="date" id="datefrom" name="datefrom" value="{{datefrom}}" required class="form-control"
+            aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+    </div>
+    <div class="input-group mb-3 w-25">
+        <span class="input-group-text" id="inputGroup-sizing-default">До: </span>
+        <input type="date" id="dateto" name="dateto" value="{{dateto}}" required class="form-control"
+            aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+    </div>
+    <button type="submit" href="/room/1" class="btn btn-primary">Забронировать</button>
+</form>
+{% if success is not None %}
+{% if success  %}
+<div class="alert alert-primary w-50" role="alert">
+    <p>Номер успешно забронирован, хорошего отдыха!</p>
+</div>
+{% else %}
+<div class="alert alert-danger w-50" role="alert">
+    <p>Не удалось забронировать номер, следующие даты заняты: <br>{{items}}</p>
+    <p>Пожалуйста, выберите другой промежуток времени</p>
+</div>
+{% endif %}
+{% endif %}
+
+<script>
+    input_datefrom = document.getElementById('datefrom');
+    today = new Date();
+    input_datefrom.min = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+
+    input_dateto = document.getElementById('dateto');
+    input_dateto.min = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate() + 1}`;
+
+    input_datefrom.addEventListener("input", function () {
+        input_datefrom = document.getElementById('datefrom');
+        input_dateto = document.getElementById('dateto');
+        input_dateto.min = input_datefrom.value;
+    })
+</script>
+{% endblock %}
